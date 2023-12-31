@@ -1,5 +1,5 @@
 {
-  "name": "apollo_n_plus_1",
+  "name": "employees-graphql-server",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -16,7 +16,9 @@
   "type": "module",
   "dependencies": {
     "@apollo/server": "^4.9.5",
-    "graphql": "^16.8.1"
+    "@apollo/subgraph": "^2.6.2",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
