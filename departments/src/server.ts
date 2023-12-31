@@ -23,16 +23,22 @@ const typeDefs = gql`
     }
 `;
 
-const departments = [
+type Department = {
+    id: number;
+    name: string;
+    employeeIds: number[];
+};
+
+const departments: Department[] = [
     {
         id: 1,
         name: 'Finance',
-        employee_ids: [1, 2, 3],
+        employeeIds: [1, 2, 3],
     },
     {
         id: 2,
         name: 'Happiness',
-        employee_ids: [6, 7, 8]
+        employeeIds: [6, 7, 8]
     },
 ];
 
@@ -40,10 +46,13 @@ const resolvers = {
     Query: {
         departments: () => departments,
     },
+    Department: {
+        employees: (department: Department) => department.employeeIds.map(id => ({id})),
+    }
 };
 
 const server = new ApolloServer({
-    schema: buildSubgraphSchema({ typeDefs, resolvers }),
+    schema: buildSubgraphSchema({typeDefs, resolvers}),
 });
 
 const {url} = await startStandaloneServer(server, {

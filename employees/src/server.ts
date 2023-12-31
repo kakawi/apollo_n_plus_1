@@ -24,7 +24,14 @@ const typeDefs = gql`
     }
 `;
 
-const employees = [
+type Employee = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    departmentId: number;
+};
+
+const employees: Employee[] = [
     {
         id: 1,
         firstName: 'Hleb',
@@ -68,6 +75,9 @@ const resolvers = {
     Query: {
         employees: () => employees,
     },
+    Employee: {
+        department: (employee: Employee) => ({id: employee.departmentId}),
+    }
 };
 
 const server = new ApolloServer({
