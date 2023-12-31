@@ -8,7 +8,7 @@ const typeDefs = gql`
     @link(url: "https://specs.apollo.dev/federation/v2.5",
         import: ["@key"])
 
-    type Department {
+    type Department @key(fields: "id") {
         id: ID!
         name: String
         employees: [Employee!]!
@@ -18,7 +18,7 @@ const typeDefs = gql`
         departments: [Department]
     }
 
-    type Employee @key(fields: "id") {
+    type Employee @key(fields: "id", resolvable: false) {
         id: ID!
     }
 `;
@@ -47,7 +47,12 @@ const resolvers = {
         departments: () => departments,
     },
     Department: {
-        employees: (department: Department) => department.employeeIds.map(id => ({id})),
+        __resolveReference: (department: Department) => {
+            return departments.find(d => d.id === +department.id)
+        },
+        employees: (department: Department) => {
+            return department.employeeIds.map(id => ({id}))
+        },
     }
 };
 
