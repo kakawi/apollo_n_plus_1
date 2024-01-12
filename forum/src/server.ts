@@ -2,6 +2,7 @@ import {ApolloServer} from '@apollo/server';
 import {startStandaloneServer} from '@apollo/server/standalone';
 import gql from 'graphql-tag';
 import {buildSubgraphSchema} from '@apollo/subgraph';
+import Dataloader from 'dataloader';
 
 const typeDefs = gql`
     type Post {
@@ -58,16 +59,29 @@ const comments = [
     },
     {
         id: 34,
-        text: 'comment#2_1',
-        post_id: 2,
+        text: 'comment#3_1',
+        post_id: 3,
     },
     ,
     {
         id: 83,
-        text: 'comment#2_2',
-        post_id: 2,
+        text: 'comment#3_2',
+        post_id: 3,
     },
 ];
+
+const commentsDataloader = new Dataloader((postIds: number[]) => {
+    console.log('commentsDataloader', postIds);
+    const commentsMap = comments.filter(c => postIds.includes(c.post_id)).reduce((acc, c) => {
+        if (!acc[c.post_id]) {
+            acc[c.post_id] = [];
+        }
+        acc[c.post_id].push(c);
+        return acc;
+    }, {});
+    const commentsInOrder = postIds.map(postId => commentsMap[postId] || []);
+    return Promise.resolve(commentsInOrder);
+});
 
 const resolvers = {
     Query: {
@@ -76,7 +90,8 @@ const resolvers = {
     Post: {
         comments: (post: Post) => {
             console.log('Post.comments', post);
-            return comments.filter(c => c.post_id === post.id);
+            return commentsDataloader.load(post.id);
+            // return comments.filter(c => c.post_id === post.id);
         },
     }
 };
