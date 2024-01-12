@@ -77,6 +77,7 @@ const resolvers = {
     },
     Employee: {
         __resolveReference: (employee: Employee) => {
+            console.log('Employee __resolveReference', employee)
             return employees.find(e => e.id === +employee.id)
         },
         department: (employee: Employee) => {
