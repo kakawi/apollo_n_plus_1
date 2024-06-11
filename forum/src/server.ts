@@ -72,12 +72,12 @@ const comments = [
 
 const commentsDataloader = new Dataloader((postIds: number[]) => {
     console.log('commentsDataloader', postIds);
-    const commentsMap = comments.filter(c => postIds.includes(c.post_id)).reduce((acc, c) => {
-        if (!acc[c.post_id]) {
-            acc[c.post_id] = [];
+    const commentsMap = comments.filter(c => postIds.includes(c.post_id)).reduce((map, comment) => {
+        if (!map[comment.post_id]) {
+            map[comment.post_id] = [];
         }
-        acc[c.post_id].push(c);
-        return acc;
+        map[comment.post_id].push(comment);
+        return map;
     }, {});
     const commentsInOrder = postIds.map(postId => commentsMap[postId] || []);
     return Promise.resolve(commentsInOrder);
