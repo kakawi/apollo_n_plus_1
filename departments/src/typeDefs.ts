@@ -12,6 +12,7 @@ export const typeDefs = gql`
 
   type Query {
     departments: [Department]
+    department(id: ID): Department
   }
 
   type Employee @key(fields: "id", resolvable: false) {
